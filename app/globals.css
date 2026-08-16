@@ -1,49 +1,181 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   UIET E-Cell — Global Stylesheet (single source of truth)
+   Awake design language · Tailwind v4 · design tokens below
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  /* Ink system */
+  --color-ink: #1b1d1e;
+  --color-secondary: rgba(27, 29, 30, 0.6);
+  --color-muted: rgba(27, 29, 30, 0.4);
+  --color-soft: rgba(27, 29, 30, 0.05);
+  --color-softhover: rgba(27, 29, 30, 0.08);
+  --color-bordersubtle: rgba(27, 29, 30, 0.05);
+  --color-border: rgba(27, 29, 30, 0.1);
+  --color-borderstrong: rgba(27, 29, 30, 0.16);
+
+  /* Brand */
+  --color-violet: #4928fd;
+  --color-violethover: #3b1ee6;
+
+  /* Signature */
+  --color-sun: #f6e683;
+
+  /* Awake pastels */
+  --color-porange: #ffaf68;
+  --color-pblue: #70b5ff;
+  --color-ppink: #f4889a;
+  --color-pgreen: #79d45e;
+  --color-plilac: #ba81ee;
+
+  /* Pastel tints (20% over white) */
+  --color-porangebg: #ffefda;
+  --color-pbluebg: #e2f0ff;
+  --color-ppinkbg: #fde7eb;
+  --color-pgreenbg: #e4f6df;
+  --color-plilacbg: #f1e6fb;
+
+  /* Deep pastel text */
+  --color-porangedeep: #b3661d;
+  --color-pbluedeep: #1d6fb3;
+  --color-ppinkdeep: #c74a62;
+  --color-pgreendeep: #2f7a1d;
+  --color-plilacdeep: #6b3fa8;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, serif;
+
+  /* Radius scale (reference: 8 / 16 / 24 / 30 / pill) */
+  --radius-sm2: 8px;
+  --radius-card: 16px;
+  --radius-panel: 24px;
+  --radius-cta: 30px;
+  --radius-pill: 100px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ── BASE ───────────────────────────────────────────────────── */
 html {
-  height: 100%;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+body {
+  font-family: var(--font-sans);
+  background: #ffffff;
+  color: var(--color-ink);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+::selection {
+  background: var(--color-ink);
+  color: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/* ── SCROLL REVEAL ──────────────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── ROTATING SERIF WORD (Creativity → Innovation → Strategy) ── */
+@keyframes wordSlideIn {
+  from { opacity: 0; transform: translateY(55%); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes wordSlideOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-55%); }
+}
+
+.word-in {
+  animation: wordSlideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.word-out {
+  animation: wordSlideOut 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* ── MARQUEE ────────────────────────────────────────────────── */
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marqueeScroll 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* ── PULSE (hero badge dot) ──────────────────────────────────── */
+@keyframes softPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.3); opacity: 0.7; }
+}
+
+.animate-softpulse {
+  animation: softPulse 2s infinite ease-in-out;
+}
+
+/* ── TOASTS ─────────────────────────────────────────────────── */
+.ec-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ec-toast {
+  background: var(--color-ink);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 14px 20px;
+  border-radius: 100px;
+  box-shadow: 0 4px 16px rgba(27, 29, 30, 0.18);
+  max-width: 360px;
+  animation: toastIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ec-toast-success { background: var(--color-pgreendeep); }
+.ec-toast-error { background: #c0392b; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .ec-toast-container {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .ec-toast {
+    max-width: 100%;
   }
 }
