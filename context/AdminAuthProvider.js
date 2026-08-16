@@ -1,0 +1,102 @@
+'use client';
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+
+const AdminAuthContext = createContext({
+  user: null,
+  isAuthenticated: false,
+  login: async () => false,
+  logout: () => {},
+});
+
+export function AdminAuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('ECELL_ADMIN_SESSION');
+      if (saved) {
+        setUser(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.warn('[AdminAuth] LocalStorage parse note:', e);
+    }
+  }, []);
+
+  const login = async (email, password) => {
+    const cleanEmail = email.trim().toLowerCase();
+
+    // 1. Supabase auth attempt
+    if (supabase) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password: password,
+        });
+
+        if (!error && data?.user) {
+          const authUser = {
+            email: data.user.email,
+            name: data.user.email.split('@')[0],
+            role: 'Super Admin',
+          };
+          setUser(authUser);
+          localStorage.setItem('ECELL_ADMIN_SESSION', JSON.stringify(authUser));
+          return { success: true };
+        }
+      } catch (err) {
+        console.warn('[AdminAuth] Supabase attempt note, trying local fallback:', err);
+      }
+    }
+
+    // 2. Local Fallback authentication
+    const allowedAdmins = [
+      { email: 'ecelluietfs@gmail.com', password: 'ecell@admin2026', name: 'Lakshay', role: 'Super Admin' },
+      { email: 'ananya@ecell.in', password: 'ecell@admin2026', name: 'Ananya Sharma', role: 'President / Admin' },
+      { email: 'admin@ecell.in', password: 'ecell@admin2026', name: 'Admin', role: 'Admin' },
+    ];
+
+    const match = allowedAdmins.find(
+      (a) => a.email === cleanEmail && a.password === password
+    );
+
+    if (match) {
+      const authUser = {
+        email: match.email,
+        name: match.name,
+        role: match.role,
+      };
+      setUser(authUser);
+      localStorage.setItem('ECELL_ADMIN_SESSION', JSON.stringify(authUser));
+      return { success: true };
+    }
+
+    return { success: false, error: 'Invalid credentials. Please verify your email and password.' };
+  };
+
+  const logout = () => {
+    setUser(null);
+    try {
+      localStorage.removeItem('ECELL_ADMIN_SESSION');
+      if (supabase) supabase.auth.signOut();
+    } catch (e) {}
+  };
+
+  return (
+    <AdminAuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        login,
+        logout,
+      }}
+    >
+      {children}
+    </AdminAuthContext.Provider>
+  );
+}
+
+export function useAdminAuth() {
+  return useContext(AdminAuthContext);
+}
