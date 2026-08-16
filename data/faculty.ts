@@ -1,4 +1,6 @@
-export const faculty = {
+import type { Faculty } from '@/lib/types';
+
+export const faculty: Faculty = {
   name: 'Dr. Rajesh Kumar',
   role: 'Faculty Advisor, UIET E-Cell',
   designation: 'Associate Professor, Dept. of Management Studies',

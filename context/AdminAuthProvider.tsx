@@ -1,17 +1,30 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { supabase } from '@/lib/supabase';
+import type { AdminUser } from '@/lib/types';
 
-const AdminAuthContext = createContext({
+interface LoginResult {
+  success: boolean;
+  error?: string;
+}
+
+interface AdminAuthContextValue {
+  user: AdminUser | null;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<LoginResult>;
+  logout: () => void;
+}
+
+const AdminAuthContext = createContext<AdminAuthContextValue>({
   user: null,
   isAuthenticated: false,
-  login: async () => false,
+  login: async () => ({ success: false }),
   logout: () => {},
 });
 
-export function AdminAuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+export function AdminAuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<AdminUser | null>(null);
 
   useEffect(() => {
     try {
@@ -24,7 +37,7 @@ export function AdminAuthProvider({ children }) {
     }
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email: string, password: string): Promise<LoginResult> => {
     const cleanEmail = email.trim().toLowerCase();
 
     // 1. Supabase auth attempt

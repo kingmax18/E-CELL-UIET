@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, type Dispatch, type SetStateAction, type ReactNode } from 'react';
 import { events as defaultEvents } from '@/data/events';
 import { team as defaultTeam, founders as defaultFounders } from '@/data/team';
 import { sponsors as defaultSponsors } from '@/data/sponsors';
@@ -9,31 +9,74 @@ import { gallery as defaultGallery } from '@/data/gallery';
 import { faculty as defaultFaculty } from '@/data/faculty';
 import { settings as defaultSettings } from '@/data/settings';
 import { supabase } from '@/lib/supabase';
+import type {
+  EventItem,
+  TeamMember,
+  Founder,
+  Sponsor,
+  SiteStats,
+  GalleryItem,
+  Faculty,
+  SiteSettings,
+  Application,
+} from '@/lib/types';
 
-const DataContext = createContext({
+interface DataContextValue {
+  events: EventItem[];
+  setEvents: Dispatch<SetStateAction<EventItem[]>>;
+  team: TeamMember[];
+  setTeam: Dispatch<SetStateAction<TeamMember[]>>;
+  founders: Founder[];
+  setFounders: Dispatch<SetStateAction<Founder[]>>;
+  sponsors: Sponsor[];
+  setSponsors: Dispatch<SetStateAction<Sponsor[]>>;
+  stats: SiteStats;
+  setStats: Dispatch<SetStateAction<SiteStats>>;
+  gallery: GalleryItem[];
+  setGallery: Dispatch<SetStateAction<GalleryItem[]>>;
+  faculty: Faculty;
+  setFaculty: Dispatch<SetStateAction<Faculty>>;
+  settings: SiteSettings;
+  setSettings: Dispatch<SetStateAction<SiteSettings>>;
+  applications: Application[];
+  setApplications: Dispatch<SetStateAction<Application[]>>;
+  isLoading: boolean;
+  refreshData: () => void;
+}
+
+const DataContext = createContext<DataContextValue>({
   events: defaultEvents,
+  setEvents: () => {},
   team: defaultTeam,
+  setTeam: () => {},
   founders: defaultFounders,
+  setFounders: () => {},
   sponsors: defaultSponsors,
+  setSponsors: () => {},
   stats: defaultStats,
+  setStats: () => {},
   gallery: defaultGallery,
+  setGallery: () => {},
   faculty: defaultFaculty,
+  setFaculty: () => {},
   settings: defaultSettings,
+  setSettings: () => {},
   applications: [],
+  setApplications: () => {},
   isLoading: false,
   refreshData: () => {},
 });
 
-export function DataProvider({ children }) {
-  const [events, setEvents] = useState(defaultEvents);
-  const [team, setTeam] = useState(defaultTeam);
-  const [founders, setFounders] = useState(defaultFounders);
-  const [sponsors, setSponsors] = useState(defaultSponsors);
-  const [stats, setStats] = useState(defaultStats);
-  const [gallery, setGallery] = useState(defaultGallery);
-  const [faculty, setFaculty] = useState(defaultFaculty);
-  const [settings, setSettings] = useState(defaultSettings);
-  const [applications, setApplications] = useState([]);
+export function DataProvider({ children }: { children: ReactNode }) {
+  const [events, setEvents] = useState<EventItem[]>(defaultEvents);
+  const [team, setTeam] = useState<TeamMember[]>(defaultTeam);
+  const [founders, setFounders] = useState<Founder[]>(defaultFounders);
+  const [sponsors, setSponsors] = useState<Sponsor[]>(defaultSponsors);
+  const [stats, setStats] = useState<SiteStats>(defaultStats);
+  const [gallery, setGallery] = useState<GalleryItem[]>(defaultGallery);
+  const [faculty, setFaculty] = useState<Faculty>(defaultFaculty);
+  const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchLiveSupabase = async () => {

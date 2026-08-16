@@ -1,4 +1,6 @@
-export const gallery = [
+import type { GalleryItem } from '@/lib/types';
+
+export const gallery: GalleryItem[] = [
   { id: 1, title: 'E-Cell Core Team & Award Winners', category: 'Team', image: '/gallery/page_12.jpg', description: 'The E-Cell UIET MDU core team during the Eureka Pitching Competition awards ceremony.' },
   { id: 2, title: 'Eureka Pitching Competition 2025', category: 'Competitions', image: '/gallery/page_3.jpg', description: 'Top student pitch winner receiving 1st prize trophy from faculty advisors.' },
   { id: 3, title: 'Campus Fix Challenge 2025 Winners', category: 'Competitions', image: '/gallery/page_25.jpg', description: 'Prize distribution for the Campus Fix Challenge student hackathon.' },

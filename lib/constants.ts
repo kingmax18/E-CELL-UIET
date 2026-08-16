@@ -9,7 +9,9 @@ export const SITE = {
   address: 'MDU Campus, UIET Building, Rohtak, Haryana - 124001',
 };
 
-export const NAV_LINKS = [
+import type { NavLink, Pillar, CoreValue, FAQItem } from './types';
+
+export const NAV_LINKS: NavLink[] = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/events', label: 'Events' },
@@ -17,7 +19,7 @@ export const NAV_LINKS = [
   { href: '/contact', label: 'Join Us' },
 ];
 
-export const PILLARS = [
+export const PILLARS: Pillar[] = [
   {
     number: '01',
     title: 'Entrepreneurial Mindset',
@@ -44,13 +46,13 @@ export const PILLARS = [
   },
 ];
 
-export const CORE_VALUES = [
+export const CORE_VALUES: CoreValue[] = [
   { number: '01', label: 'Execution', title: 'Bias Toward Action', description: 'We value working code and real customer feedback over lengthy pitch decks.' },
   { number: '02', label: 'Community', title: 'Founders Help Founders', description: 'Great companies are built in packs. We share leads, introductions, and technical solutions freely.' },
   { number: '03', label: 'Ambition', title: 'Uncompromising Quality', description: 'We build for national scale. Every workshop, event, and product meets studio-grade standards.' },
 ];
 
-export const FAQ_ITEMS = [
+export const FAQ_ITEMS: FAQItem[] = [
   { question: 'What is UIET E-Cell?', answer: 'UIET E-Cell is the official Entrepreneurship Cell of UIET, Maharshi Dayanand University, Rohtak. We foster student startups, innovation workshops, ideathons, and mentorship programs.' },
   { question: 'Who can join UIET E-Cell?', answer: 'Any student enrolled at MDU Rohtak across any department — engineering, management, commerce, science — can apply to join. We welcome diverse backgrounds.' },
   { question: 'How do I apply to become a member?', answer: 'Visit our Join Us page and fill out the membership application form. The E-Cell executive board reviews applications within 5-7 days.' },

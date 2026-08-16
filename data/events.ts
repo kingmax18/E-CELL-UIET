@@ -1,4 +1,6 @@
-export const events = [
+import type { EventItem } from '@/lib/types';
+
+export const events: EventItem[] = [
   {
     id: 1,
     title: 'Eureka Pitching Competition 2026',

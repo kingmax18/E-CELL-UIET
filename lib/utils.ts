@@ -1,4 +1,4 @@
-export function formatDate(iso) {
+export function formatDate(iso?: string | null): string {
   if (!iso) return '';
   return new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', {
     day: '2-digit',
@@ -7,7 +7,7 @@ export function formatDate(iso) {
   });
 }
 
-export function avatarUrl(name) {
+export function avatarUrl(name?: string | null): string {
   const initials = (name || 'EC')
     .trim()
     .split(/\s+/)
@@ -24,7 +24,7 @@ export function avatarUrl(name) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
-export function escapeHtml(str) {
+export function escapeHtml(str: unknown): string {
   if (str === null || str === undefined) return '';
   return String(str)
     .replace(/&/g, '&amp;')
@@ -34,6 +34,6 @@ export function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-export function cn(...classes) {
+export function cn(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(' ');
 }

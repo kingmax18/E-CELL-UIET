@@ -1,4 +1,6 @@
-export const team = [
+import type { TeamMember, Founder } from '@/lib/types';
+
+export const team: TeamMember[] = [
   // Leadership
   { id: 1, name: 'Ananya Sharma', role: 'President', department: 'Leadership', year: '4th Year, B.Tech CSE', linkedin: '#', email: 'ecelluietfs@gmail.com', photo: null, order: 1 },
   { id: 2, name: 'Rohan Mehta', role: 'Vice President', department: 'Leadership', year: '3rd Year, MBA', linkedin: '#', email: 'ecelluietfs@gmail.com', photo: null, order: 2 },
@@ -24,7 +26,7 @@ export const team = [
   { id: 17, name: 'Mohit Tanwar', role: 'Reports & NEC Writer', department: 'Documentation', year: '2nd Year, BA (English)', linkedin: '#', email: null, photo: null, order: 2 },
 ];
 
-export const founders = [
+export const founders: Founder[] = [
   {
     id: 101,
     name: 'Nitigya',
@@ -67,7 +69,7 @@ export const founders = [
   },
 ];
 
-export const departments = [
+export const departments: string[] = [
   'Leadership',
   'Social Media',
   'Design and Tech',

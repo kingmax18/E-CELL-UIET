@@ -1,4 +1,6 @@
-export const settings = {
+import type { SiteSettings } from '@/lib/types';
+
+export const settings: SiteSettings = {
   announcementBanner: {
     enabled: false,
     text: 'Applications Open for Batch 2026-27',
