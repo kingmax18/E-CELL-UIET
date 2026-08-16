@@ -13,7 +13,7 @@ export const events: EventItem[] = [
     mode: 'Offline',
     status: 'upcoming',
     tags: ['Pitching', 'Competition', 'Startup', 'Ideas'],
-    registrationUrl: '/contact',
+    registrationUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSd41rML7ajzF0dJhxZCef-wUCDjLB5yOQuXdiml14ES9-88-Q/viewform',
     accentColor: '#ff8709',
     category: 'orange',
   },
