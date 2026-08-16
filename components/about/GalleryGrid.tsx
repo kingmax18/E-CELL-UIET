@@ -1,0 +1,57 @@
+import React from 'react';
+import Image from 'next/image';
+import SectionHeader from '@/components/ui/SectionHeader';
+
+interface GalleryItem {
+  id: number;
+  image: string;
+  title: string;
+  description?: string;
+  category?: string;
+}
+
+export default function GalleryGrid({ gallery = [] }: { gallery?: GalleryItem[] }) {
+  return (
+    <section className="py-[clamp(56px,7vw,80px)]">
+      <div className="max-w-[1272px] mx-auto px-6">
+        <SectionHeader
+          badge="Campus Moments"
+          title="Life &amp; energy at"
+          italicTitle="UIET E-Cell"
+          subtitle="Glimpses of pitch competitions, workshops, lamp lighting ceremonies, and team circles."
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {gallery.map((item) => (
+            <div
+              key={item.id}
+              className="reveal group bg-white border border-border rounded-panel p-3 transition-all duration-200 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-borderstrong"
+            >
+              {/* Nested image frame — image sits inside the padded card
+                  with its own rounded, clipped container so the hover
+                  zoom never breaks the card edges */}
+              <div className="relative w-full h-[260px] overflow-hidden rounded-card bg-[#f8fafc]">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1272px) 50vw, 33vw"
+                  className="object-cover object-center transition-transform duration-400 group-hover:scale-[1.05]"
+                />
+                <span className="absolute top-3 left-3 bg-white/90 [backdrop-filter:blur(8px)] text-ink text-[11px] font-medium py-1 px-3 rounded-pill">
+                  {item.category}
+                </span>
+              </div>
+              <div className="px-2 pt-4 pb-2 flex flex-col gap-1.5">
+                <h4 className="font-sans font-medium text-lg tracking-[-0.015em] text-ink">{item.title}</h4>
+                {item.description && (
+                  <p className="text-sm leading-[1.55] text-secondary">{item.description}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
