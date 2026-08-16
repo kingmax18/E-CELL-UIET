@@ -5,6 +5,8 @@ import Button from '@/components/ui/Button';
 import { useToast } from '@/context/ToastProvider';
 import { supabase } from '@/lib/supabase';
 import { PageHeader, adminInput, adminLabel, adminCard } from './ui';
+import type { SiteStats } from '@/lib/types';
+import type { Dispatch, SetStateAction } from 'react';
 
 interface StatField {
   key: 'members' | 'events' | 'startups' | 'years';
@@ -23,8 +25,8 @@ export default function StatsManager({
   stats,
   setStats,
 }: {
-  stats: { members?: { value?: number }; events?: { value?: number }; startups?: { value?: number }; years?: { value?: number } };
-  setStats?: (s: Record<string, { value: number; label?: string; suffix?: string }>) => void;
+  stats: SiteStats;
+  setStats?: Dispatch<SetStateAction<SiteStats>>;
 }) {
   const { showToast } = useToast();
   const [form, setForm] = useState({
@@ -50,7 +52,7 @@ export default function StatsManager({
       supabase
         .from('stats')
         .upsert({ id: 1, members: next.members.value, events: next.events.value, startups: next.startups.value, years: next.years.value })
-        .catch((err: unknown) => console.warn('[Admin] Supabase stats persist warning:', err));
+        .then(undefined, (err: unknown) => console.warn('[Admin] Supabase stats persist warning:', err));
     }
 
     showToast('Homepage counters updated!', 'success');

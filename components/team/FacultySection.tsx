@@ -1,14 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
-
-interface Faculty {
-  name: string;
-  designation: string;
-  bio?: string;
-  email?: string;
-  photo?: string;
-}
+import type { Faculty } from '@/lib/types';
 
 export default function FacultySection({ faculty }: { faculty: Faculty }) {
   if (!faculty) return null;

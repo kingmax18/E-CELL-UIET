@@ -43,7 +43,7 @@ export default function GalleryManager({
       supabase
         .from('gallery')
         .insert([created])
-        .catch((err: unknown) => console.warn('[Admin] Supabase gallery persist warning:', err));
+        .then(undefined, (err: unknown) => console.warn('[Admin] Supabase gallery persist warning:', err));
     }
 
     setModalOpen(false);
@@ -54,7 +54,7 @@ export default function GalleryManager({
   const handleDelete = (id: number) => {
     if (confirm('Remove this photo from the gallery?')) {
       if (setGallery) setGallery(gallery.filter((g) => g.id !== id));
-      if (supabase) supabase.from('gallery').delete().eq('id', id).catch(() => {});
+      if (supabase) supabase.from('gallery').delete().eq('id', id).then(undefined, () => {});
       showToast('Photo removed', 'info');
     }
   };

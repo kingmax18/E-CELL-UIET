@@ -17,7 +17,7 @@ import { useData } from '@/context/DataProvider';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 export default function HomePage() {
-  const { events, faculty, stats } = useData();
+  const { faculty, stats } = useData();
   useScrollReveal();
 
   return (
@@ -28,7 +28,7 @@ export default function HomePage() {
         <LogoStrip />
         <StatsSection stats={stats} />
         <ServicesSection />
-        <EventsPreview events={events} />
+        <EventsPreview />
         <TeamPreview />
         <TestimonialSection faculty={faculty} />
         <AccoladesSection />

@@ -89,7 +89,7 @@ export default function TeamManager({
   const handleDelete = (id: number) => {
     if (confirm('Remove this team member?')) {
       if (setTeam) setTeam(team.filter((m) => m.id !== id));
-      if (supabase) supabase.from('team').delete().eq('id', id).catch(() => {});
+      if (supabase) supabase.from('team').delete().eq('id', id).then(undefined, () => {});
       showToast('Member removed', 'info');
     }
   };

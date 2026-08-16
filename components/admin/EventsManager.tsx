@@ -6,23 +6,10 @@ import { useToast } from '@/context/ToastProvider';
 import { supabase } from '@/lib/supabase';
 import { formatDate } from '@/lib/utils';
 import { PageHeader, Modal, StatusBadge, EmptyState, adminInput, adminLabel, adminCard, adminTd, adminTh } from './ui';
+import type { EventItem } from '@/lib/types';
+import type { Dispatch, SetStateAction } from 'react';
 
-export interface AdminEvent {
-  id: number;
-  title: string;
-  tagline?: string;
-  description?: string;
-  date: string;
-  time?: string;
-  venue?: string;
-  mode?: string;
-  status?: string;
-  category?: string;
-  registrationUrl?: string | null;
-  tags?: string[];
-}
-
-const BLANK: Omit<AdminEvent, 'id'> = {
+const BLANK: Omit<EventItem, 'id'> = {
   title: '',
   tagline: '',
   description: '',
@@ -39,13 +26,13 @@ export default function EventsManager({
   events,
   setEvents,
 }: {
-  events: AdminEvent[];
-  setEvents?: (e: AdminEvent[]) => void;
+  events: EventItem[];
+  setEvents?: Dispatch<SetStateAction<EventItem[]>>;
 }) {
   const { showToast } = useToast();
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<AdminEvent | null>(null);
-  const [form, setForm] = useState<Omit<AdminEvent, 'id'>>(BLANK);
+  const [editing, setEditing] = useState<EventItem | null>(null);
+  const [form, setForm] = useState<Omit<EventItem, 'id'>>(BLANK);
 
   const openCreate = () => {
     setEditing(null);
@@ -53,13 +40,13 @@ export default function EventsManager({
     setModalOpen(true);
   };
 
-  const openEdit = (ev: AdminEvent) => {
+  const openEdit = (ev: EventItem) => {
     setEditing(ev);
     setForm({ ...BLANK, ...ev });
     setModalOpen(true);
   };
 
-  const persist = async (row: AdminEvent, upsert: boolean) => {
+  const persist = async (row: EventItem, upsert: boolean) => {
     if (!supabase) return;
     try {
       const { id, ...fields } = row;
@@ -83,7 +70,7 @@ export default function EventsManager({
       persist({ ...editing, ...form }, true);
       showToast('Event updated successfully!', 'success');
     } else {
-      const created: AdminEvent = {
+      const created: EventItem = {
         ...form,
         id: Date.now(),
         tags: form.tagline ? form.tagline.split(',').map((t) => t.trim()).filter(Boolean).slice(0, 3) : ['Event', 'UIET'],
@@ -95,7 +82,7 @@ export default function EventsManager({
     setModalOpen(false);
   };
 
-  const toggleStatus = (ev: AdminEvent) => {
+  const toggleStatus = (ev: EventItem) => {
     const newStatus = ev.status === 'upcoming' ? 'past' : 'upcoming';
     if (setEvents) setEvents(events.map((x) => (x.id === ev.id ? { ...x, status: newStatus } : x)));
     persist({ ...ev, status: newStatus }, true);
@@ -105,7 +92,7 @@ export default function EventsManager({
   const handleDelete = (id: number) => {
     if (confirm('Are you sure you want to delete this event?')) {
       if (setEvents) setEvents(events.filter((e) => e.id !== id));
-      if (supabase) supabase.from('events').delete().eq('id', id).catch(() => {});
+      if (supabase) supabase.from('events').delete().eq('id', id).then(undefined, () => {});
       showToast('Event deleted', 'info');
     }
   };
@@ -175,7 +162,7 @@ export default function EventsManager({
               <label className={adminLabel}>Status</label>
               <select
                 value={form.status}
-                onChange={(e) => setForm({ ...form, status: e.target.value })}
+                onChange={(e) => setForm({ ...form, status: e.target.value as 'upcoming' | 'past' })}
                 className={adminInput}
               >
                 <option value="upcoming">Upcoming</option>

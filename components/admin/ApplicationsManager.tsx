@@ -6,24 +6,8 @@ import Button from '@/components/ui/Button';
 import { useToast } from '@/context/ToastProvider';
 import { supabase } from '@/lib/supabase';
 import { PageHeader, StatusBadge, EmptyState, FilterPills, adminCard, adminTd, adminTh } from './ui';
-
-interface AppRow {
-  id: number;
-  name: string;
-  email?: string;
-  phone?: string;
-  enrollment?: string;
-  deptInterest?: string;
-  deptinterest?: string;
-  branchYear?: string;
-  branchyear?: string;
-  status?: string;
-  linkedin?: string | null;
-  whyJoin?: string;
-  whyjoin?: string;
-  submittedOn?: string;
-  submittedon?: string;
-}
+import type { Application } from '@/lib/types';
+import type { Dispatch, SetStateAction } from 'react';
 
 const FILTERS = ['All', 'Pending', 'Shortlisted', 'Accepted', 'Rejected'];
 
@@ -31,8 +15,8 @@ export default function ApplicationsManager({
   applications,
   setApplications,
 }: {
-  applications: AppRow[];
-  setApplications?: (a: AppRow[]) => void;
+  applications: Application[];
+  setApplications?: Dispatch<SetStateAction<Application[]>>;
 }) {
   const { showToast } = useToast();
   const [filter, setFilter] = useState('All');

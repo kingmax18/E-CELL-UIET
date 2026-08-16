@@ -81,7 +81,7 @@ export default function PartnersManager({
   const handleDelete = (id: number) => {
     if (confirm('Remove this partner?')) {
       if (setSponsors) setSponsors(sponsors.filter((s) => s.id !== id));
-      if (supabase) supabase.from('sponsors').delete().eq('id', id).catch(() => {});
+      if (supabase) supabase.from('sponsors').delete().eq('id', id).then(undefined, () => {});
       showToast('Partner removed', 'info');
     }
   };

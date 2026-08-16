@@ -1,15 +1,6 @@
 import React from 'react';
 import { avatarUrl } from '@/lib/utils';
-
-interface TeamMember {
-  id: number;
-  name: string;
-  role: string;
-  year?: string;
-  photo?: string;
-  linkedin?: string;
-  email?: string;
-}
+import type { TeamMember } from '@/lib/types';
 
 export default function TeamCard({ member }: { member: TeamMember; bgColor?: string }) {
   return (

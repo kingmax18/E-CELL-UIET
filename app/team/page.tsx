@@ -55,7 +55,7 @@ export default function TeamPage() {
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {founders.map((f: { id: number }) => (
+              {founders.map((f) => (
                 <FounderCard key={f.id} founder={f} />
               ))}
             </div>
@@ -72,10 +72,10 @@ export default function TeamPage() {
               subtitle="Organized across 6 core functional areas to deliver campus-wide impact."
             />
 
-            {departments.map((dept: string) => {
+            {departments.map((dept) => {
               const deptMembers = team
-                .filter((m: { department: string; order?: number }) => m.department === dept)
-                .sort((a: { order?: number }, b: { order?: number }) => (a.order || 99) - (b.order || 99));
+                .filter((m) => m.department === dept)
+                .sort((a, b) => (a.order || 99) - (b.order || 99));
 
               if (deptMembers.length === 0) return null;
 
@@ -89,7 +89,7 @@ export default function TeamPage() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {deptMembers.map((member: { id: number }) => (
+                    {deptMembers.map((member) => (
                       <TeamCard key={member.id} member={member} />
                     ))}
                   </div>

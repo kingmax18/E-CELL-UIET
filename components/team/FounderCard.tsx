@@ -1,15 +1,6 @@
 import React from 'react';
 import { avatarUrl } from '@/lib/utils';
-
-interface Founder {
-  id: number;
-  name: string;
-  role: string;
-  batch?: string;
-  contribution?: string;
-  badge?: string;
-  photo?: string;
-}
+import type { Founder } from '@/lib/types';
 
 export default function FounderCard({ founder }: { founder: Founder }) {
   return (
