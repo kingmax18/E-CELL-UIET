@@ -17,6 +17,7 @@ function RotatingWord() {
         setLeaving(false);
       }, 450);
     }, 2600);
+
     return () => {
       clearInterval(cycle);
       clearTimeout(timer);
@@ -25,7 +26,9 @@ function RotatingWord() {
 
   return (
     <span className="inline-block relative whitespace-nowrap">
-      <span className={`inline-block font-serif italic font-normal tracking-[-0.01em] text-ink ${leaving ? 'word-out' : 'word-in'}`}>
+      <span
+        className={`inline-block font-serif italic font-normal tracking-[-0.01em] text-ink ${leaving ? 'word-out' : 'word-in'}`}
+      >
         {ROTATING_WORDS[index]}
       </span>
     </span>
@@ -39,18 +42,22 @@ function CountUp({ value }: { value: number }) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
     let raf: number;
     let observer: IntersectionObserver;
 
     const animate = () => {
       const duration = 1800;
       const start = performance.now();
+
       const tick = (now: number) => {
         const p = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - p, 3);
         setDisplay(Math.round(eased * value));
+
         if (p < 1) raf = requestAnimationFrame(tick);
       };
+
       raf = requestAnimationFrame(tick);
     };
 
@@ -67,6 +74,7 @@ function CountUp({ value }: { value: number }) {
     );
 
     observer.observe(el);
+
     return () => {
       observer.disconnect();
       if (raf) cancelAnimationFrame(raf);
@@ -96,13 +104,11 @@ export default function StatsSection({ stats }: StatsSectionProps) {
   return (
     <section className="py-[clamp(56px,7vw,80px)]">
       <div className="max-w-[1272px] mx-auto px-6">
-        {/* Heading ending in a rotating serif word — reference pattern */}
         <h2 className="reveal font-sans font-medium text-[clamp(28px,4vw,44px)] leading-[1.2] tracking-[-0.035em] text-ink text-center max-w-[960px] mx-auto mb-[72px] [text-wrap:balance]">
           <span className="block">Fostering an ecosystem of creative thinkers, builders,</span>
           <span className="block">and student entrepreneurs with <RotatingWord /></span>
         </h2>
 
-        {/* Counters — reference: big open numbers, no card surfaces */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-12">
           {statList.map((stat, idx) => (
             <div key={idx} className="reveal text-center">
