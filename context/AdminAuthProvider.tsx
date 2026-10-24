@@ -16,6 +16,11 @@ interface AdminAuthContextValue {
   logout: () => void;
 }
 
+const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL?.trim().toLowerCase();
+const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+const IS_DEV_FALLBACK_ENABLED =
+  process.env.NODE_ENV === 'development' && Boolean(ADMIN_EMAIL) && Boolean(ADMIN_PASSWORD);
+
 const AdminAuthContext = createContext<AdminAuthContextValue>({
   user: null,
   isAuthenticated: false,
@@ -30,70 +35,79 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     try {
       const saved = localStorage.getItem('ECELL_ADMIN_SESSION');
       if (saved) {
-        setUser(JSON.parse(saved));
+        const parsed = JSON.parse(saved) as AdminUser;
+        if (parsed?.email) {
+          setUser(parsed);
+        }
       }
     } catch (e) {
-      console.warn('[AdminAuth] LocalStorage parse note:', e);
+      console.warn('[AdminAuth] LocalStorage parse warning:', e);
     }
   }, []);
 
   const login = async (email: string, password: string): Promise<LoginResult> => {
     const cleanEmail = email.trim().toLowerCase();
 
-    // 1. Supabase auth attempt
     if (supabase) {
       try {
         const { data, error } = await supabase.auth.signInWithPassword({
           email: cleanEmail,
-          password: password,
+          password,
         });
 
         if (!error && data?.user) {
-          const authUser = {
-            email: data.user.email,
-            name: data.user.email.split('@')[0],
+          const authUser: AdminUser = {
+            email: data.user.email || cleanEmail,
+            name: data.user.email?.split('@')[0] || 'Admin',
             role: 'Super Admin',
           };
+
           setUser(authUser);
           localStorage.setItem('ECELL_ADMIN_SESSION', JSON.stringify(authUser));
           return { success: true };
         }
+
+        if (error) {
+          console.warn('[AdminAuth] Supabase auth failed:', error.message);
+        }
       } catch (err) {
-        console.warn('[AdminAuth] Supabase attempt note, trying local fallback:', err);
+        console.warn('[AdminAuth] Supabase auth attempt failed:', err);
       }
     }
 
-    // 2. Local Fallback authentication
-    const allowedAdmins = [
-      { email: 'ecelluietfs@gmail.com', password: 'ecell@admin2026', name: 'Lakshay', role: 'Super Admin' },
-      { email: 'ananya@ecell.in', password: 'ecell@admin2026', name: 'Ananya Sharma', role: 'President / Admin' },
-      { email: 'admin@ecell.in', password: 'ecell@admin2026', name: 'Admin', role: 'Admin' },
-    ];
-
-    const match = allowedAdmins.find(
-      (a) => a.email === cleanEmail && a.password === password
-    );
-
-    if (match) {
-      const authUser = {
-        email: match.email,
-        name: match.name,
-        role: match.role,
+    if (
+      IS_DEV_FALLBACK_ENABLED &&
+      cleanEmail === ADMIN_EMAIL &&
+      password === ADMIN_PASSWORD
+    ) {
+      const authUser: AdminUser = {
+        email: ADMIN_EMAIL,
+        name: 'Local Admin',
+        role: 'Developer',
       };
       setUser(authUser);
       localStorage.setItem('ECELL_ADMIN_SESSION', JSON.stringify(authUser));
       return { success: true };
     }
 
-    return { success: false, error: 'Invalid credentials. Please verify your email and password.' };
+    return {
+      success: false,
+      error: supabase
+        ? 'Invalid credentials. Please verify your admin email and password.'
+        : 'Admin authentication is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your environment.',
+    };
   };
 
   const logout = () => {
     setUser(null);
     try {
       localStorage.removeItem('ECELL_ADMIN_SESSION');
-      if (supabase) supabase.auth.signOut();
-    } catch (e) {}
+      if (supabase) {
+        void supabase.auth.signOut();
+      }
+    } catch (e) {
+      console.warn('[AdminAuth] Logout warning:', e);
+    }
   };
 
   return (
